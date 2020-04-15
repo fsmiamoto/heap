@@ -24,9 +24,10 @@ func MinInt(node, child interface{}) bool {
 	return child.(int) < node.(int)
 }
 
-// New creates a heap using the elements of the slice with the provided capacity and
+// New creates a heap using the elements of the slice, with the provided capacity, and
 // using the CompareFunc for any comparison, therefore you can a
 // MaxHeap or a MinHeap just by changing the function
+// The time complexity of building the heap is O(n), n = len(elements)
 func New(elements []interface{}, capacity int, cf CompareFunc) *Heap {
 	// Make a copy of the original elements for no bad surprises
 	elems := make([]interface{}, capacity)
@@ -42,6 +43,7 @@ func New(elements []interface{}, capacity int, cf CompareFunc) *Heap {
 }
 
 // Insert adds a new element to the heap
+// The time complexity is  O(log(n)), n = # of elements in the heap
 func (h *Heap) Insert(x interface{}) error {
 	if h.size == h.capacity {
 		return errors.New("heap has no capacity")
@@ -61,6 +63,7 @@ func (h *Heap) Insert(x interface{}) error {
 }
 
 // Extract returns the element at the root of the heap
+// The time complexity is  O(log(n)), n = # of elements in the heap
 func (h *Heap) Extract() interface{} {
 	panic("not implemented")
 }
