@@ -12,7 +12,7 @@ type Heap struct {
 	elements []interface{}
 }
 
-// CompareFunc is a function signature used for comparions between
+// CompareFunc is a function signature used for comparisons between
 // a node and it's children, returning true if the two should be swapped
 type CompareFunc func(node, child interface{}) bool
 
@@ -109,9 +109,8 @@ func (h *Heap) largerChild(i int) int {
 
 	if h.compare(h.elements[left], h.elements[right]) {
 		return right
-	} else {
-		return left
 	}
+	return left
 }
 
 // heapify makes a heap of the slice in-place
