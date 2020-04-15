@@ -101,7 +101,7 @@ func (h *Heap) Extract() (interface{}, error) {
 
 func (h *Heap) largerChild(i int) int {
 	left := 2*i + 1
-	right := 2*i + 2
+	right := left + 1
 
 	if right > h.size-1 {
 		return left
@@ -114,12 +114,11 @@ func (h *Heap) largerChild(i int) int {
 }
 
 // heapify makes a heap of the slice in-place
-// TODO: review this logic
 func heapify(elems []interface{}, compare CompareFunc) {
 	i := len(elems)/2 - 1
 	for i >= 0 {
 		left := 2*i + 1
-		right := 2*i + 2
+		right := left + 1
 
 		if right > len(elems)-1 {
 			// Look at only the left child
@@ -130,25 +129,24 @@ func heapify(elems []interface{}, compare CompareFunc) {
 					i = left + 1
 				}
 			}
-			continue
-		}
-
-		rightIsLarger := compare(elems[left], elems[right])
-		var compareIndex int
-
-		if rightIsLarger {
-			compareIndex = right
 		} else {
-			compareIndex = left
-		}
+			// Look at both the left and right child
+			rightIsLarger := compare(elems[left], elems[right])
+			var compareIndex int
 
-		shouldSwap := compare(elems[i], elems[compareIndex])
-		if shouldSwap {
-			elems[i], elems[compareIndex] = elems[compareIndex], elems[i]
-			if compareIndex < len(elems)/2 {
-				i = compareIndex + 1
+			if rightIsLarger {
+				compareIndex = right
+			} else {
+				compareIndex = left
 			}
-			continue
+
+			shouldSwap := compare(elems[i], elems[compareIndex])
+			if shouldSwap {
+				elems[i], elems[compareIndex] = elems[compareIndex], elems[i]
+				if compareIndex < len(elems)/2 {
+					i = compareIndex + 1
+				}
+			}
 		}
 		i--
 	}

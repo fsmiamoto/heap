@@ -12,8 +12,36 @@ func TestHeap(t *testing.T) {
 		input  []interface{}
 		expect []interface{}
 	}{
-		{"MaxHeap", MaxInt, []interface{}{10, 20, 15, 12, 40, 25, 18}, []interface{}{40, 20, 25, 12, 10, 15, 18}},
-		{"MinHeap", MinInt, []interface{}{8, 12, 9, 7, 22, 3, 26, 14, 11, 15, 22}, []interface{}{3, 7, 8, 11, 15, 9, 26, 14, 12, 22, 22}},
+		{"MaxHeap #1", MaxInt,
+			[]interface{}{10, 20, 15, 12, 40, 25, 18},
+			[]interface{}{40, 20, 25, 12, 10, 15, 18}},
+		{"MaxHeap #2", MaxInt,
+			[]interface{}{100, 88, 24, 43, 35, 7, 97, 39, 46, 38, 15, 53, 65, 93, 87, 84, 59, 52, 24, 53},
+			[]interface{}{100, 88, 97, 84, 53, 65, 93, 59, 52, 38, 15, 53, 7, 24, 87, 39, 43, 46, 24, 35}},
+		{"MaxHeap #3", MaxInt,
+			[]interface{}{10, 20},
+			[]interface{}{20, 10}},
+		{"MaxHeap #4", MaxInt,
+			[]interface{}{5},
+			[]interface{}{5}},
+		{"MaxHeap #5", MaxInt,
+			[]interface{}{},
+			[]interface{}{}},
+		{"MinHeap #1", MinInt,
+			[]interface{}{8, 12, 9, 7, 22, 3, 26, 14, 11, 15, 22},
+			[]interface{}{3, 7, 8, 11, 15, 9, 26, 14, 12, 22, 22}},
+		{"MinHeap #2", MinInt,
+			[]interface{}{40, 30, 50, 100, 15},
+			[]interface{}{15, 30, 50, 100, 40}},
+		{"MinHeap #3", MinInt,
+			[]interface{}{15, 7, 96, 38, 54, 52, 69, 25, 28, 46, 18, 39, 6, 7, 29, 88, 40, 37, 67, 22},
+			[]interface{}{6, 7, 7, 25, 18, 39, 15, 38, 28, 22, 54, 96, 52, 69, 29, 88, 40, 37, 67, 46}},
+		{"MinHeap #3", MinInt,
+			[]interface{}{10, 20},
+			[]interface{}{10, 20}},
+		{"MinHeap #4", MinInt,
+			[]interface{}{5},
+			[]interface{}{5}},
 	}
 
 	for _, tt := range tests {
