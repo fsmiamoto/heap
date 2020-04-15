@@ -2,6 +2,7 @@ package heap
 
 import "errors"
 
+// Heap is a representation of a binary heap data structure
 type Heap struct {
 	size     int
 	capacity int
@@ -9,12 +10,28 @@ type Heap struct {
 	elements []interface{}
 }
 
+// CompareFunc is a function signature used for comparions between
+// a node and it's children, returning true if the two should be swapped
 type CompareFunc func(node, child interface{}) bool
 
+// MaxInt is a CompareFunc for a MaxHeap of integers
+func MaxInt(node, child interface{}) bool {
+	return child.(int) > node.(int)
+}
+
+// MinInt is a CompareFunc for a MinHeap of integers
+func MinInt(node, child interface{}) bool {
+	return child.(int) < node.(int)
+}
+
+// New creates a heap using the elements of the slice with the provided capacity and
+// using the CompareFunc for any comparison, therefore you can a
+// MaxHeap or a MinHeap just by changing the function
 func New(elements []interface{}, capacity int, cf CompareFunc) *Heap {
 	// Make a copy of the original elements for no bad surprises
 	elems := make([]interface{}, capacity)
 	copy(elems, elements)
+
 	heapify(elems, cf)
 	return &Heap{
 		size:     len(elems),
@@ -24,6 +41,7 @@ func New(elements []interface{}, capacity int, cf CompareFunc) *Heap {
 	}
 }
 
+// Insert adds a new element to the heap
 func (h *Heap) Insert(x interface{}) error {
 	if h.size == h.capacity {
 		return errors.New("heap has no capacity")
@@ -42,8 +60,9 @@ func (h *Heap) Insert(x interface{}) error {
 	return nil
 }
 
-func (h *Heap) DeleteRoot() interface{} {
-	return nil
+// Extract returns the element at the root of the heap
+func (h *Heap) Extract() interface{} {
+	panic("not implemented")
 }
 
 // heapify makes a heap of the slice in-place
