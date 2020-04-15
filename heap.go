@@ -1,6 +1,8 @@
 package heap
 
-import "errors"
+import (
+	"errors"
+)
 
 // Heap is a representation of a binary heap data structure
 type Heap struct {
@@ -64,8 +66,52 @@ func (h *Heap) Insert(x interface{}) error {
 
 // Extract returns the element at the root of the heap
 // The time complexity is  O(log(n)), n = # of elements in the heap
-func (h *Heap) Extract() interface{} {
-	panic("not implemented")
+func (h *Heap) Extract() (interface{}, error) {
+	if h.size == 0 {
+		return nil, errors.New("Empty heap, no element to extract")
+	}
+
+	h.elements[h.size-1], h.elements[0] = h.elements[0], h.elements[h.size-1]
+	removedElem := h.elements[h.size-1]
+
+	h.size--
+
+	// Only one node left, no need to fix the heap
+	if h.size == 1 {
+		return removedElem, nil
+	}
+
+	// Fix the heap
+	i := 0
+	for i < h.size-1 {
+		child := h.largerChild(i)
+
+		if h.compare(h.elements[i], h.elements[child]) {
+			h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
+			if child < h.size/2-1 {
+				i = child
+			}
+		} else {
+			break
+		}
+	}
+
+	return removedElem, nil
+}
+
+func (h *Heap) largerChild(i int) int {
+	left := 2*i + 1
+	right := 2*i + 2
+
+	if right > h.size-1 {
+		return left
+	}
+
+	if h.compare(h.elements[left], h.elements[right]) {
+		return right
+	} else {
+		return left
+	}
 }
 
 // heapify makes a heap of the slice in-place

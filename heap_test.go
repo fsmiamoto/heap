@@ -75,6 +75,89 @@ func TestHeap(t *testing.T) {
 
 		}
 	})
+
+	t.Run("Test Extract", func(t *testing.T) {
+		tests := []struct {
+			name             string
+			cf               CompareFunc
+			shouldFail       bool
+			extractedElement interface{}
+			heap             *Heap
+			expect           *Heap
+		}{
+			{"Extract on MaxHeap", MaxInt, false, 50,
+				&Heap{
+					size:     7,
+					capacity: 9,
+					compare:  MaxInt,
+					elements: []interface{}{50, 30, 20, 15, 10, 8, 16, 0, 0},
+				},
+				&Heap{
+					size:     6,
+					capacity: 9,
+					compare:  MaxInt,
+					elements: []interface{}{30, 16, 20, 15, 10, 8, 50, 0, 0},
+				},
+			},
+			{"Extract on small MaxHeap", MaxInt, false, 50,
+				&Heap{
+					size:     2,
+					capacity: 2,
+					compare:  MaxInt,
+					elements: []interface{}{50, 30},
+				},
+				&Heap{
+					size:     1,
+					capacity: 2,
+					compare:  MaxInt,
+					elements: []interface{}{30, 50},
+				},
+			},
+			{"Extract on MinHeap", MinInt, false, 3,
+				&Heap{
+					size:     11,
+					capacity: 11,
+					compare:  MinInt,
+					elements: []interface{}{3, 7, 8, 11, 15, 9, 26, 14, 12, 22, 22},
+				},
+				&Heap{
+					size:     10,
+					capacity: 11,
+					compare:  MinInt,
+					elements: []interface{}{7, 11, 8, 12, 15, 9, 26, 14, 22, 22, 3},
+				},
+			},
+			{"Empty heap", MinInt, true, nil,
+				&Heap{
+					size:     0,
+					capacity: 3,
+					compare:  MinInt,
+					elements: []interface{}{0, 0, 0},
+				},
+				&Heap{
+					size:     0,
+					capacity: 3,
+					compare:  MinInt,
+					elements: []interface{}{0, 0, 0},
+				},
+			},
+		}
+
+		for _, tt := range tests {
+			element, err := tt.heap.Extract()
+			assertEqual(t, element, tt.extractedElement)
+			assertError(t, tt.shouldFail, err)
+			assertEqualHeap(t, tt.heap, tt.expect)
+
+		}
+	})
+}
+
+func assertEqual(t *testing.T, got, expect interface{}) {
+	t.Helper()
+	if !reflect.DeepEqual(got, expect) {
+		t.Errorf("Element is not the expected one, got %v but expected %v", got, expect)
+	}
 }
 
 func assertError(t *testing.T, shouldFail bool, err error) {
