@@ -48,7 +48,7 @@ func New(elements []interface{}, capacity int, cf CompareFunc) *Heap {
 // The time complexity is  O(log(n)), n = # of elements in the heap
 func (h *Heap) Insert(x interface{}) error {
 	if h.size == h.capacity {
-		return errors.New("heap has no capacity")
+		return errors.New("heap: no capacity for new element")
 	}
 
 	h.size++
@@ -68,7 +68,7 @@ func (h *Heap) Insert(x interface{}) error {
 // The time complexity is  O(log(n)), n = # of elements in the heap
 func (h *Heap) Extract() (interface{}, error) {
 	if h.size == 0 {
-		return nil, errors.New("Empty heap, no element to extract")
+		return nil, errors.New("heap: empty, no element to extract")
 	}
 
 	h.elements[h.size-1], h.elements[0] = h.elements[0], h.elements[h.size-1]
@@ -97,6 +97,11 @@ func (h *Heap) Extract() (interface{}, error) {
 	}
 
 	return removedElem, nil
+}
+
+// IsEmpty indicates if the heap has no elements left
+func (h *Heap) IsEmpty() bool {
+	return h.size == 0
 }
 
 func (h *Heap) largerChild(i int) int {
