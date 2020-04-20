@@ -32,7 +32,7 @@ func MinInt(node, child interface{}) bool {
 // The time complexity of building the heap is O(n), n = len(elements)
 func New(elements []interface{}, capacity int, cf CompareFunc) *Heap {
 	// Make a copy of the original elements for no bad surprises
-	elems := make([]interface{}, capacity)
+	elems := make([]interface{}, len(elements), capacity)
 	copy(elems, elements)
 
 	heapify(elems, cf)
