@@ -119,24 +119,24 @@ func (h *Heap) largerChild(i int) int {
 }
 
 // heapify makes a heap of the slice in-place
-func heapify(elems []interface{}, compare CompareFunc) {
-	i := len(elems)/2 - 1
+func (h *Heap) heapify() {
+	i := h.size/2 - 1
 	for i >= 0 {
 		left := 2*i + 1
 		right := left + 1
 
-		if right > len(elems)-1 {
+		if right > h.size-1 {
 			// Look at only the left child
-			shouldSwap := compare(elems[i], elems[left])
+			shouldSwap := h.compare(h.elements[i], h.elements[left])
 			if shouldSwap {
-				elems[i], elems[left] = elems[left], elems[i]
-				if left < len(elems)/2 {
+				h.elements[i], h.elements[left] = h.elements[left], h.elements[i]
+				if left < h.size/2 {
 					i = left + 1
 				}
 			}
 		} else {
 			// Look at both the left and right child
-			rightIsLarger := compare(elems[left], elems[right])
+			rightIsLarger := h.compare(h.elements[left], h.elements[right])
 			var compareIndex int
 
 			if rightIsLarger {
@@ -145,10 +145,10 @@ func heapify(elems []interface{}, compare CompareFunc) {
 				compareIndex = left
 			}
 
-			shouldSwap := compare(elems[i], elems[compareIndex])
+			shouldSwap := h.compare(h.elements[i], h.elements[compareIndex])
 			if shouldSwap {
-				elems[i], elems[compareIndex] = elems[compareIndex], elems[i]
-				if compareIndex < len(elems)/2 {
+				h.elements[i], h.elements[compareIndex] = h.elements[compareIndex], h.elements[i]
+				if compareIndex < h.size/2 {
 					i = compareIndex + 1
 				}
 			}
