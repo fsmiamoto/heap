@@ -121,12 +121,8 @@ func (h *Heap) heapify() {
 
 		if right > h.size-1 {
 			// Look at only the left child
-			shouldSwap := h.compare(h.elements[i], h.elements[left])
-			if shouldSwap {
+			if h.compare(h.elements[i], h.elements[left]) {
 				h.elements[i], h.elements[left] = h.elements[left], h.elements[i]
-				if left < h.size/2 {
-					i = left + 1
-				}
 			}
 		} else {
 			// Look at both the left and right child
