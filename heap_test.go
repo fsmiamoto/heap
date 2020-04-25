@@ -34,7 +34,7 @@ func TestHeap(t *testing.T) {
 		{"MinHeap #2", MinInt, 5,
 			[]interface{}{40, 30, 50, 100, 15},
 			[]interface{}{15, 30, 50, 100, 40}},
-		{"MinHeap #3", MinInt, 50,
+		{"MinHeap #3", MinInt, 22,
 			[]interface{}{15, 7, 96, 38, 54, 52, 69, 25, 28, 46, 18, 39, 6, 7, 29, 88, 40, 37, 67, 22},
 			[]interface{}{6, 7, 7, 25, 18, 39, 15, 38, 28, 22, 54, 96, 52, 69, 29, 88, 40, 37, 67, 46}},
 		{"MinHeap #3", MinInt, 5,
@@ -60,114 +60,121 @@ func TestHeap(t *testing.T) {
 
 	t.Run("Test Insert", func(t *testing.T) {
 		tests := []struct {
-			name       string
-			element    interface{}
-			cf         CompareFunc
-			shouldFail bool
-			heap       *Heap
-			expect     *Heap
+			name    string
+			element interface{}
+			heap    *Heap
+			expect  *Heap
 		}{
-			{"Insert on MaxHeap", 60, MaxInt, false,
+			{"Insert on MaxHeap", 60,
 				&Heap{
 					size:     7,
-					capacity: 9,
 					compare:  MaxInt,
-					elements: []interface{}{50, 30, 20, 15, 10, 8, 16, 0, 0},
+					elements: []interface{}{50, 30, 20, 15, 10, 8, 16},
 				},
 				&Heap{
 					size:     8,
-					capacity: 9,
 					compare:  MaxInt,
-					elements: []interface{}{60, 50, 20, 30, 10, 8, 16, 15, 0},
+					elements: []interface{}{60, 50, 20, 30, 10, 8, 16, 15},
 				},
 			},
-			{"Heap already full", 60, MaxInt, true,
+			{"Insert on MaxHeap #2", 60,
 				&Heap{
 					size:     9,
-					capacity: 9,
 					compare:  MaxInt,
 					elements: []interface{}{50, 30, 20, 15, 10, 8, 16, 9, 8},
 				},
 				&Heap{
-					size:     9,
-					capacity: 9,
+					size:     10,
 					compare:  MaxInt,
-					elements: []interface{}{50, 30, 20, 15, 10, 8, 16, 9, 8},
+					elements: []interface{}{60, 50, 20, 15, 30, 8, 16, 9, 8, 10},
+				},
+			},
+			{"Insert on MinHeap #1", 1,
+				&Heap{
+					size:     4,
+					compare:  MinInt,
+					elements: []interface{}{3, 5, 7, 10},
+				},
+				&Heap{
+					size:     5,
+					compare:  MinInt,
+					elements: []interface{}{1, 3, 7, 10, 5},
+				},
+			},
+			{"Insert on MinHeap #2", 1,
+				&Heap{
+					size:     0,
+					compare:  MinInt,
+					elements: []interface{}{},
+				},
+				&Heap{
+					size:     1,
+					compare:  MinInt,
+					elements: []interface{}{1},
 				},
 			},
 		}
 
 		for _, tt := range tests {
-			err := tt.heap.Insert(tt.element)
-			assertError(t, tt.shouldFail, err)
+			tt.heap.Insert(tt.element)
 			assertEqualHeap(t, tt.heap, tt.expect)
-
 		}
 	})
 
 	t.Run("Test Extract", func(t *testing.T) {
 		tests := []struct {
 			name             string
-			cf               CompareFunc
 			shouldFail       bool
 			extractedElement interface{}
 			heap             *Heap
 			expect           *Heap
 		}{
-			{"Extract on MaxHeap", MaxInt, false, 50,
+			{"Extract on MaxHeap", false, 50,
 				&Heap{
 					size:     7,
-					capacity: 9,
 					compare:  MaxInt,
-					elements: []interface{}{50, 30, 20, 15, 10, 8, 16, 0, 0},
+					elements: []interface{}{50, 30, 20, 15, 10, 8, 16},
 				},
 				&Heap{
 					size:     6,
-					capacity: 9,
 					compare:  MaxInt,
-					elements: []interface{}{30, 16, 20, 15, 10, 8, 50, 0, 0},
+					elements: []interface{}{30, 16, 20, 15, 10, 8, 50},
 				},
 			},
-			{"Extract on small MaxHeap", MaxInt, false, 50,
+			{"Extract on small MaxHeap", false, 50,
 				&Heap{
 					size:     2,
-					capacity: 2,
 					compare:  MaxInt,
 					elements: []interface{}{50, 30},
 				},
 				&Heap{
 					size:     1,
-					capacity: 2,
 					compare:  MaxInt,
 					elements: []interface{}{30, 50},
 				},
 			},
-			{"Extract on MinHeap", MinInt, false, 3,
+			{"Extract on MinHeap", false, 3,
 				&Heap{
 					size:     11,
-					capacity: 11,
 					compare:  MinInt,
 					elements: []interface{}{3, 7, 8, 11, 15, 9, 26, 14, 12, 22, 22},
 				},
 				&Heap{
 					size:     10,
-					capacity: 11,
 					compare:  MinInt,
 					elements: []interface{}{7, 11, 8, 12, 15, 9, 26, 14, 22, 22, 3},
 				},
 			},
-			{"Empty heap", MinInt, true, nil,
+			{"Empty heap", true, nil,
 				&Heap{
 					size:     0,
-					capacity: 3,
 					compare:  MinInt,
-					elements: []interface{}{0, 0, 0},
+					elements: []interface{}{},
 				},
 				&Heap{
 					size:     0,
-					capacity: 3,
 					compare:  MinInt,
-					elements: []interface{}{0, 0, 0},
+					elements: []interface{}{},
 				},
 			},
 		}
@@ -204,9 +211,6 @@ func assertEqualHeap(t *testing.T, got, want *Heap) {
 	t.Helper()
 	if got.size != want.size {
 		t.Errorf("Heaps have different sizes, got %d want %d", got.size, want.size)
-	}
-	if got.capacity != want.capacity {
-		t.Errorf("Heaps have different capacities, got %d want %d", got.capacity, want.capacity)
 	}
 	if !reflect.DeepEqual(got.elements, want.elements) {
 		t.Errorf("Heaps have different elements, got %v want %v", got.elements, want.elements)
