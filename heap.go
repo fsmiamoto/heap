@@ -46,13 +46,9 @@ func New(elements []interface{}, initialCapacity int, cf CompareFunc) *Heap {
 
 // Insert adds a new element to the heap
 // The time complexity is  O(log(n)), n = # of elements in the heap
-func (h *Heap) Insert(x interface{}) error {
-	if h.size == h.capacity {
-		return errors.New("heap: no capacity for new element")
-	}
-
+func (h *Heap) Insert(x interface{}) {
+	h.elements = append(h.elements, x)
 	h.size++
-	h.elements[h.size-1] = x
 
 	// Fix the heap
 	i := h.size - 1
@@ -60,8 +56,6 @@ func (h *Heap) Insert(x interface{}) error {
 		h.elements[parent(i)], h.elements[i] = h.elements[i], h.elements[parent(i)]
 		i = parent(i)
 	}
-
-	return nil
 }
 
 // Extract returns the element at the root of the heap
