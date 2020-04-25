@@ -7,7 +7,6 @@ import (
 // Heap is a representation of a binary heap data structure
 type Heap struct {
 	size     int
-	capacity int
 	compare  CompareFunc
 	elements []interface{}
 }
@@ -30,18 +29,19 @@ func MinInt(node, child interface{}) bool {
 // using the CompareFunc for any comparison, therefore you can a
 // MaxHeap or a MinHeap just by changing the function
 // The time complexity of building the heap is O(n), n = len(elements)
-func New(elements []interface{}, capacity int, cf CompareFunc) *Heap {
+func New(elements []interface{}, initialCapacity int, cf CompareFunc) *Heap {
 	// Make a copy of the original elements for no bad surprises
-	elems := make([]interface{}, len(elements), capacity)
+	elems := make([]interface{}, len(elements), initialCapacity)
 	copy(elems, elements)
 
-	heapify(elems, cf)
-	return &Heap{
+	h := &Heap{
 		size:     len(elems),
-		capacity: capacity,
 		compare:  cf,
 		elements: elems,
 	}
+	h.heapify()
+
+	return h
 }
 
 // Insert adds a new element to the heap
