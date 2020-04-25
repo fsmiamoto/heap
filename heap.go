@@ -26,8 +26,8 @@ func MinInt(node, child interface{}) bool {
 }
 
 // New creates a heap using the elements of the slice, with the provided capacity, and
-// using the CompareFunc for any comparison, therefore you can a
-// MaxHeap or a MinHeap just by changing the function
+// using the CompareFunc for any comparison between elements
+// Since the heap uses a slice underneath, you can specify a initial capacity for it.
 // The time complexity of building the heap is O(n), n = len(elements)
 func New(elements []interface{}, initialCapacity int, cf CompareFunc) *Heap {
 	// Make a copy of the original elements for no bad surprises
