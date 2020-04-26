@@ -16,10 +16,10 @@ The package defines two example functions for building a Max or Min Heap of inte
 func main() {
     values := []interface{}{40, 30, 50, 100, 15}
     
-    // You can specify a initial capacity for the heap,
+    // You can specify an initial capacity for the heap,
     // len(values) in this case, which helps to avoid reallocations.
     // Also, this heap uses the package defined MinInt comparison function,
-    // which builds a MinHeap of integers
+    // that builds a MinHeap of integers
 	h := heap.New(values, len(values), heap.MinInt)
 
     var sorted []int
