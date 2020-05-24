@@ -27,10 +27,10 @@ func main() {
     for !h.IsEmpty() {
         v, err := h.Extract()
         if err != nil {
-        log.Fatal(err)
-    }
+            log.Fatal(err)
+        }
         sorted = append(sorted, v.(int))
     }
-        fmt.Println(sorted) // [15 30 40 50 100]
-    }
+    fmt.Println(sorted) // [15 30 40 50 100]
+}
 ```
