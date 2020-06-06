@@ -39,7 +39,7 @@ func New(elements []interface{}, initialCapacity int, cf CompareFunc) *Heap {
 		compare:  cf,
 		elements: elems,
 	}
-	h.heapify()
+	h.buildHeap()
 
 	return h
 }
@@ -76,19 +76,7 @@ func (h *Heap) Extract() (interface{}, error) {
 	}
 
 	// Fix the heap
-	i := 0
-	for i < h.size-1 {
-		child := h.largerChild(i)
-
-		if shouldSwap := h.compare(h.elements[i], h.elements[child]); !shouldSwap {
-			break
-		}
-
-		h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
-		if child < h.size/2-1 {
-			i = child
-		}
-	}
+	h.heapify(0)
 
 	return removedElem, nil
 }
@@ -98,48 +86,60 @@ func (h *Heap) IsEmpty() bool {
 	return h.size == 0
 }
 
-// heapify makes a heap of the slice in-place
-func (h *Heap) heapify() {
-	i := h.size/2 - 1
-	for ; i >= 0; i-- {
-		left := 2*i + 1
-		right := left + 1
-
-		if right > h.size-1 {
-			// Look at only the left child
-			if h.compare(h.elements[i], h.elements[left]) {
-				h.elements[i], h.elements[left] = h.elements[left], h.elements[i]
-			}
-			continue
-		}
-
-		// Look at both the left and right child, get the larger one
+// buildHeap makes a heap of the slice in-place
+func (h *Heap) buildHeap() {
+	for i := h.size/2 - 1; i >= 0; i-- {
 		child := h.largerChild(i)
 
 		shouldSwap := h.compare(h.elements[i], h.elements[child])
-		if shouldSwap {
-			h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
-			if child < h.size/2 {
-				i = child + 1
-			}
+		if !shouldSwap {
+			continue
+		}
+
+		h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
+		if child < h.size/2 {
+			i = child + 1
 		}
 	}
 }
 
+// heapify fixes the heap property at root index i.
+// This function assumes the subtrees are already heapified
+func (h *Heap) heapify(i int) {
+	child := h.largerChild(i)
+
+	if child > h.size-1 {
+		return
+	}
+
+	shouldSwap := h.compare(h.elements[i], h.elements[child])
+	if !shouldSwap {
+		return
+	}
+
+	h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
+	h.heapify(child)
+}
+
+// largerChild returns the index of the larger child, as defined with the
+// provided CompareFunc
 func (h *Heap) largerChild(i int) int {
 	left := 2*i + 1
 	right := left + 1
 
 	if right > h.size-1 {
+		// There's not a right child
 		return left
 	}
 
 	if h.compare(h.elements[left], h.elements[right]) {
 		return right
+	} else {
+		return left
 	}
-	return left
 }
 
-func parent(i int) int {
-	return (i - 1) / 2
+//parent retuns the index of the parent of the given child index
+func parent(child int) int {
+	return (child - 1) / 2
 }
