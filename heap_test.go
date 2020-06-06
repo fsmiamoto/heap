@@ -1,8 +1,11 @@
 package heap
 
 import (
+	"math/rand"
 	"reflect"
+	"sort"
 	"testing"
+	"time"
 )
 
 func TestHeap(t *testing.T) {
@@ -185,6 +188,35 @@ func TestHeap(t *testing.T) {
 			assertError(t, tt.shouldFail, err)
 			assertEqualHeap(t, tt.heap, tt.expect)
 
+		}
+	})
+
+	t.Run("Heapsort", func(t *testing.T) {
+		const sliceSize = 100
+		const numOfRepetitions = 10000
+		const maxInt = 1000
+
+		rand.Seed(time.Now().UnixNano())
+
+		for i := 0; i < numOfRepetitions; i++ {
+			h := New(nil, sliceSize, MinInt)
+
+			for i := 0; i < sliceSize; i++ {
+				h.Insert(rand.Intn(maxInt))
+			}
+
+			sorted := make([]int, sliceSize)
+
+			for i := range sorted {
+				value, err := h.Extract()
+				assertError(t, false, err)
+
+				sorted[i] = value.(int)
+			}
+
+			if !sort.IntsAreSorted(sorted) {
+				t.Errorf("Slice was expected to be sorted but got %v", sorted)
+			}
 		}
 	})
 }
