@@ -80,13 +80,13 @@ func (h *Heap) Extract() (interface{}, error) {
 	for i < h.size-1 {
 		child := h.largerChild(i)
 
-		if h.compare(h.elements[i], h.elements[child]) {
-			h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
-			if child < h.size/2-1 {
-				i = child
-			}
-		} else {
+		if shouldSwap := h.compare(h.elements[i], h.elements[child]); !shouldSwap {
 			break
+		}
+
+		h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
+		if child < h.size/2-1 {
+			i = child
 		}
 	}
 
@@ -96,6 +96,34 @@ func (h *Heap) Extract() (interface{}, error) {
 // IsEmpty indicates if the heap has no elements left
 func (h *Heap) IsEmpty() bool {
 	return h.size == 0
+}
+
+// heapify makes a heap of the slice in-place
+func (h *Heap) heapify() {
+	i := h.size/2 - 1
+	for ; i >= 0; i-- {
+		left := 2*i + 1
+		right := left + 1
+
+		if right > h.size-1 {
+			// Look at only the left child
+			if h.compare(h.elements[i], h.elements[left]) {
+				h.elements[i], h.elements[left] = h.elements[left], h.elements[i]
+			}
+			continue
+		}
+
+		// Look at both the left and right child, get the larger one
+		child := h.largerChild(i)
+
+		shouldSwap := h.compare(h.elements[i], h.elements[child])
+		if shouldSwap {
+			h.elements[i], h.elements[child] = h.elements[child], h.elements[i]
+			if child < h.size/2 {
+				i = child + 1
+			}
+		}
+	}
 }
 
 func (h *Heap) largerChild(i int) int {
@@ -110,41 +138,6 @@ func (h *Heap) largerChild(i int) int {
 		return right
 	}
 	return left
-}
-
-// heapify makes a heap of the slice in-place
-func (h *Heap) heapify() {
-	i := h.size/2 - 1
-	for i >= 0 {
-		left := 2*i + 1
-		right := left + 1
-
-		if right > h.size-1 {
-			// Look at only the left child
-			if h.compare(h.elements[i], h.elements[left]) {
-				h.elements[i], h.elements[left] = h.elements[left], h.elements[i]
-			}
-		} else {
-			// Look at both the left and right child
-			rightIsLarger := h.compare(h.elements[left], h.elements[right])
-			var compareIndex int
-
-			if rightIsLarger {
-				compareIndex = right
-			} else {
-				compareIndex = left
-			}
-
-			shouldSwap := h.compare(h.elements[i], h.elements[compareIndex])
-			if shouldSwap {
-				h.elements[i], h.elements[compareIndex] = h.elements[compareIndex], h.elements[i]
-				if compareIndex < h.size/2 {
-					i = compareIndex + 1
-				}
-			}
-		}
-		i--
-	}
 }
 
 func parent(i int) int {
